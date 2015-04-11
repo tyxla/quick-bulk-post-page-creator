@@ -58,7 +58,7 @@ class QBPPC_Form {
 
 		// register the submenu page - child of the Settings parent menu item
 		add_submenu_page(
-			'options-general.php',
+			'tools.php',
 			$menu_title,
 			$menu_title,
 			'publish_posts',
@@ -98,6 +98,20 @@ class QBPPC_Form {
 				'default' => '',
 				'help' => __('The post type that you want to bulk insert entries into.', 'qbppc'),
 				'options' => QBPPC_Posts::get_post_types(),
+				'required' => true,
+			),
+			'post_status' => array(
+				'type' => 'select',
+				'title' => __('Post Status', 'qbppc'),
+				'default' => '',
+				'help' => __('The post status that you want to bulk insert entries into.', 'qbppc'),
+				'options' => array(
+					'publish' => __('Published', 'qbppc'),
+					'draft' => __('Draft', 'qbppc'),
+					'pending' => __('Pending', 'qbppc'),
+					'private' => __('Private', 'qbppc'),
+					'trash' => __('Trash', 'qbppc'),
+				),
 				'required' => true,
 			),
 			'entries' => array(
@@ -164,7 +178,8 @@ class QBPPC_Form {
 
 		// insert the entries hierarchy
 		$post_type = get_option('qbppc_post_type');
-		$total_entries = QBPPC_Posts::process_hierarchy($hierarchy->get_hierarchy(), $post_type);
+		$post_status = get_option('qbppc_post_status');
+		$total_entries = QBPPC_Posts::process_hierarchy($hierarchy->get_hierarchy(), $post_type, $post_status);
 
 		// empty the entries field
 		update_option('qbppc_entries', '');
