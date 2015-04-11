@@ -166,6 +166,23 @@ abstract class QBPPC_Field {
 	}
 
 	/**
+	 * Render the required attribute of the field.
+	 *
+	 * @access public
+	 */
+	public function render_required() {
+		global $qbppc;
+		$field_data = $qbppc->get_form()->get_field_data();
+		$original_name = str_replace('qbppc_', '', $this->get_id());
+
+		$required = !empty($field_data[$original_name]['required']) ? $field_data[$original_name]['required'] : false;
+		
+		if ($required) {
+			echo ' required="required"';
+		}
+	}
+
+	/**
 	 * Render this field.
 	 *
 	 * @access public

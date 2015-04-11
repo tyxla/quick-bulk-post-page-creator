@@ -13,7 +13,7 @@ class QBPPC_Field_Text extends QBPPC_Field {
 	 */
 	public function render() {
 		?>
-		<input name="<?php echo $this->get_id(); ?>" id="<?php echo $this->get_id(); ?>" type="text" value="<?php echo esc_attr($this->get_value()); ?>" class="regular-text" />
+		<input name="<?php echo $this->get_id(); ?>" id="<?php echo $this->get_id(); ?>" type="text" value="<?php echo esc_attr($this->get_value()); ?>" class="regular-text" <?php echo $this->render_required(); ?> />
 		<?php
 		$this->render_help();
 	}

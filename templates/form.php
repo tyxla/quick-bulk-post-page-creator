@@ -4,7 +4,7 @@
 
 		<p><?php _e('Please, select a post type and input your preferred hierarchy.', 'qbppc'); ?></p>
 
-		<form method="post" action="">
+		<form method="post" action="options.php">
 			<?php 
 			settings_fields( $qbppc->get_form()->get_menu_id() );
 			do_settings_sections( $qbppc->get_form()->get_menu_id() );

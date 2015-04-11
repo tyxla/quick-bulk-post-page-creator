@@ -10,7 +10,7 @@ class QBPPC_Posts {
 	 * @access public
 	 * @static
 	 *
-	 * @param array $post_types Retrieve the available post types.
+	 * @return array $post_types Retrieve the available post types.
 	 */
 	public static function get_post_types() {
 		$post_types = array();
@@ -21,6 +21,54 @@ class QBPPC_Posts {
 		}
 
 		return $post_types;
+	}
+
+	/**
+	 * Using an array hierarchy, insert the entries hierarchy.
+	 *
+	 * @access public
+	 * @static
+	 *
+	 * @param array $hierarchy Hierarchy of entries to insert.
+	 * @param string $post_type Post type of the entries.
+	 * @param int $parent ID of the parent entry.
+	 * @return int $total Number of entries that were inserted.
+	 */
+	public static function process_hierarchy($hierarchy = array(), $post_type = 'post', $parent = 0) {
+		$total = 0;
+		foreach ($hierarchy as $hierarchy_entry) {
+			$id = self::insert($post_type, $hierarchy_entry['title'], $parent);
+			$total++;
+
+			if ( !empty($hierarchy_entry['children']) ) {
+				$total += self::process_hierarchy($hierarchy_entry['children'], $post_type, $id);
+			}
+		}
+
+		return $total;
+	}
+
+	/**
+	 * Insert a post of certain post type with a certain title under a specific parent.
+	 *
+	 * @access public
+	 * @static
+	 *
+	 * @param string $post_type Post type of the post.
+	 * @param string $title Title of the post.
+	 * @param int $parent ID of the parent post.
+	 * @return int $id The ID of the inserted post.
+	 */
+	public static function insert($post_type, $title, $parent = 0) {
+		$id = wp_insert_post(array(
+			'post_type' => $post_type,
+			'post_title' => $title,
+			'post_content' => '',
+			'post_parent' => $parent,
+			'post_status' => 'publish',
+		));
+
+		return $id;
 	}
 
 }

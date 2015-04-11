@@ -17,6 +17,9 @@ class QBPPC_Form {
 
 		// register settings fields & sections
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+
+		// handle the form submission
+		add_action( 'update_option_qbppc_entries', array( $this, 'handle' ) );
 	}
 
 	/**
@@ -84,22 +87,25 @@ class QBPPC_Form {
 		return array(
 			'hierarchy_indent_character' => array(
 				'type' => 'text',
-				'title' => 'Hierarchy Indent Character',
+				'title' => __('Hierarchy Indent Character', 'qbppc'),
 				'default' => '*',
-				'help' => 'You can use this character at the beginning of your entry to specify hierarchy indentation.',
+				'help' => __('You can use this character at the beginning of your entry to specify hierarchy indentation.', 'qbppc'),
+				'required' => true,
 			),
 			'post_type' => array(
 				'type' => 'select',
-				'title' => 'Post Type',
+				'title' => __('Post Type', 'qbppc'),
 				'default' => '',
-				'help' => 'The post type that you want to bulk insert entries into.',
+				'help' => __('The post type that you want to bulk insert entries into.', 'qbppc'),
 				'options' => QBPPC_Posts::get_post_types(),
+				'required' => true,
 			),
-			'pages' => array(
+			'entries' => array(
 				'type' => 'textarea',
-				'title' => 'Entries (one per line)',
+				'title' => __('Entries (one per line)', 'qbppc'),
 				'default' => '',
-				'help' => 'A hierarchical list of your entries.',
+				'help' => __('A hierarchical list of your entries.', 'qbppc'),
+				'required' => true,
 			),
 		);
 	}
@@ -135,6 +141,37 @@ class QBPPC_Form {
 
 		// render the form template
 		include_once($template);
+	}
+
+	/**
+	 * Handle the form submission.
+	 * Should be hooked on the update_option of the last form field.
+	 *
+	 * @access public
+	 */
+	public function handle() {
+		// prevent recursion
+		remove_action( 'update_option_qbppc_entries', array( $this, 'handle' ) );
+
+		// get the entries
+		$entries_raw = get_option('qbppc_entries');
+
+		// generate the entries hierachy
+		$hierarchy = new QBPPC_Hierarchy();
+		$hierarchy->set_character( get_option('qbppc_hierarchy_indent_character') );
+		$hierarchy->set_text( $entries_raw );
+		$hierarchy->build();
+
+		// insert the entries hierarchy
+		$post_type = get_option('qbppc_post_type');
+		$total_entries = QBPPC_Posts::process_hierarchy($hierarchy->get_hierarchy(), $post_type);
+
+		// empty the entries field
+		update_option('qbppc_entries', '');
+
+		// add success notice
+		$notice = sprintf( _n('1 entry inserted.', '%s entries inserted.', $total_entries, 'qbppc'), $total_entries );
+		add_settings_error('general', 'settings_updated', $notice, 'updated');
 	}
 
 }

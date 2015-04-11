@@ -12,10 +12,11 @@ class QBPPC_Field_Select extends QBPPC_Field {
 	 * @access public
 	 */
 	public function render() {
+		$field_value = $this->get_value();
 		?>
 		<select name="<?php echo $this->get_id(); ?>" id="<?php echo $this->get_id(); ?>" class="postform">
 			<?php foreach ($this->get_options() as $value => $text): ?>
-				<option value="<?php echo esc_attr($value); ?>"><?php echo $text; ?></option>
+				<option value="<?php echo esc_attr($value); ?>" <?php selected($field_value, $value); echo $this->render_required(); ?>><?php echo $text; ?></option>
 			<?php endforeach ?>
 		</select>
 		<?php
