@@ -133,7 +133,18 @@ abstract class QBPPC_Field {
 	 * @return mixed $value The value of this field.
 	 */
 	public function get_value() {
-		return get_option($this->get_id());
+		global $qbppc;
+		$field_data = $qbppc->get_form()->get_field_data();
+		$original_name = str_replace('qbppc_', '', $this->get_id());
+
+		$default = !empty($field_data[$original_name]['default']) ? $field_data[$original_name]['default'] : '';
+
+		$value = get_option($this->get_id());
+		if ($value === false) {
+			$value = $default;
+		}
+
+		return $value;
 	}
 
 	/**
