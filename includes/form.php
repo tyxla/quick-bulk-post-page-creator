@@ -20,6 +20,9 @@ class QBPPC_Form {
 
 		// handle the form submission
 		add_action( 'update_option_qbppc_entries', array( $this, 'handle' ) );
+
+		// display the plugin's notices
+		add_action( 'admin_notices', array($this, 'notices') );
 	}
 
 	/**
@@ -168,6 +171,15 @@ class QBPPC_Form {
 	}
 
 	/**
+	 * Display the errors/notices of this plugin.
+	 *
+	 * @access public
+	 */
+	public function notices() {
+		settings_errors( 'qbppc' );
+	}
+
+	/**
 	 * Handle the form submission.
 	 * Should be hooked on the update_option of the last form field.
 	 *
@@ -206,7 +218,7 @@ class QBPPC_Form {
 
 		// add success notice
 		$notice = sprintf( _n('1 entry inserted.', '%s entries inserted.', $total_entries, 'qbppc'), $total_entries );
-		add_settings_error('general', 'settings_updated', $notice, 'updated');
+		add_settings_error('qbppc', 'settings_updated', $notice, 'updated');
 	}
 
 }
