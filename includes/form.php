@@ -95,7 +95,7 @@ class QBPPC_Form {
 			'post_type' => array(
 				'type' => 'select',
 				'title' => __('Post Type', 'qbppc'),
-				'default' => '',
+				'default' => 'post',
 				'help' => __('The post type that you want to bulk insert entries into.', 'qbppc'),
 				'options' => QBPPC_Posts::get_post_types(),
 				'required' => true,
@@ -103,7 +103,7 @@ class QBPPC_Form {
 			'post_status' => array(
 				'type' => 'select',
 				'title' => __('Post Status', 'qbppc'),
-				'default' => '',
+				'default' => 'publish',
 				'help' => __('The post status that you want to bulk insert entries into.', 'qbppc'),
 				'options' => array(
 					'publish' => __('Published', 'qbppc'),
@@ -176,9 +176,19 @@ class QBPPC_Form {
 		$hierarchy->set_text( $entries_raw );
 		$hierarchy->build();
 
-		// insert the entries hierarchy
+		// determine post type
 		$post_type = get_option('qbppc_post_type');
+		if (!$post_type) {
+			$post_type = 'post';
+		}
+
+		// determine post status
 		$post_status = get_option('qbppc_post_status');
+		if (!$post_status) {
+			$post_status = 'publish';
+		}
+
+		// insert the entries hierarchy
 		$total_entries = QBPPC_Posts::process_hierarchy($hierarchy->get_hierarchy(), $post_type, $post_status);
 
 		// empty the entries field
