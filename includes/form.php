@@ -118,7 +118,17 @@ class QBPPC_Form {
 				'type' => 'textarea',
 				'title' => __('Entries (one per line)', 'qbppc'),
 				'default' => '',
-				'help' => __('A hierarchical list of your entries.', 'qbppc'),
+				'help' => 
+					__('A hierarchical list of your entries.', 'qbppc') . 
+					'<br /><br />' . 
+
+					__('Example 1: This will create 3 posts with the corresponding titles:', 'qbppc') . '<br />' . 
+					'<strong style="padding-left: 18px; display: block;">Post 1<br />Post 2<br />Post 3</strong>' . 
+ 					'<br />' . 
+
+					__('Example 2: This will create 5 pages with the corresponding titles in the corresponding hierarchy:', 'qbppc') . '<br />' . 
+					'<strong style="padding-left: 18px; display: block;">Post X<br />* Post X1<br />** Post X1a<br />* Post X2<br />Post Y</strong>' . 
+					__('Post X1 is a child of X, while X1a is a child of X1 (considering that the asterisk is used as hierarchy indentation character).', 'qbppc'),
 				'required' => true,
 			),
 		);
