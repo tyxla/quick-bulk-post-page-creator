@@ -19,7 +19,8 @@ class QBPPC_Form {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		// handle the form submission
-		add_action( 'update_option_qbppc_entries', array( $this, 'handle' ) );
+		add_action( 'add_option_qbppc_entries', array( $this, 'handle' ), 10, 2 );
+		add_action( 'update_option_qbppc_entries', array( $this, 'handle' ), 10, 2 );
 
 		// display the plugin's notices
 		add_action( 'admin_notices', array($this, 'notices') );
@@ -183,9 +184,12 @@ class QBPPC_Form {
 	 * Handle the form submission.
 	 * Should be hooked on the update_option of the last form field.
 	 *
+	 * @param string $placeholder Either an option name or the old option value.
+	 * @param string $entries_raw The new entries.
 	 * @access public
 	 */
-	public function handle() {
+	public function handle($placeholder, $entries_raw) {
+
 		// prevent recursion
 		remove_action( 'update_option_qbppc_entries', array( $this, 'handle' ) );
 
