@@ -3,12 +3,13 @@
  * Plugin Name: Quick Bulk Post & Page Creator
  * Plugin URI: https://wordpress.org/plugins/quick-bulk-post-page-creator/
  * Description: A handy tool for batch creation of posts and pages in your preferred hierarchy. 
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: tyxla
- * Author URI: https://github.com/tyxla
+ * Author URI: http://marinatanasov.com/
+ * Plugin URI: https://github.com/tyxla/quick-bulk-post-page-creator
  * License: GPL2
  * Requires at least: 3.0.1
- * Tested up to: 4.3
+ * Tested up to: 4.4
  */
 
 /**
