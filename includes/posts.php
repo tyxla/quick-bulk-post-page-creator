@@ -36,9 +36,15 @@ class QBPPC_Posts {
 	 * @return int $total Number of entries that were inserted.
 	 */
 	public static function process_hierarchy($hierarchy = array(), $post_type = 'post', $post_status = 'publish', $parent = 0) {
+
+        global $wpdb;
+
 		$total = 0;
+		$menu_order_max = $wpdb->get_var("SELECT MAX(menu_order)+1 AS menu_order FROM {$wpdb->posts} WHERE post_type='{$post_type}'");
+
 		foreach ($hierarchy as $hierarchy_entry) {
-			$id = self::insert($post_type, $hierarchy_entry['title'], $post_status, $parent);
+			$menu_order = $menu_order_max + $total;
+			$id = self::insert($post_type, $hierarchy_entry['title'], $post_status, $parent, $menu_order);
 			$total++;
 
 			if ( !empty($hierarchy_entry['children']) ) {
@@ -59,16 +65,23 @@ class QBPPC_Posts {
 	 * @param string $title Title of the post.
 	 * @param string $post_status Post status of the post.
 	 * @param int $parent ID of the parent post.
+	 * @param int $menu_order Menu order of the post.
 	 * @return int $id The ID of the inserted post.
 	 */
-	public static function insert($post_type, $title, $post_status = 'publish', $parent = 0) {
-		$id = wp_insert_post(array(
+	public static function insert($post_type, $title, $post_status = 'publish', $parent = 0, $menu_order = 0) {
+		$args = array(
 			'post_type' => $post_type,
 			'post_title' => $title,
 			'post_content' => '',
 			'post_parent' => $parent,
 			'post_status' => $post_status,
-		));
+		);
+		
+		if($menu_order !== 0){
+			$args['menu_order'] = $menu_order;
+		}
+
+		$id = wp_insert_post($args);
 
 		return $id;
 	}
